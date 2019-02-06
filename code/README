@@ -1,0 +1,50 @@
+Names: Rutvik Patel and Kaden Dreger
+ID  : 1530012, 1528632
+CMPUT 275 Winter 2019
+Assignment 1 Part 1: Restaurant Finder
+-------------------------------------------
+Included files:
+    * restaurant-finder1.cpp
+    * Makefile
+    * README
+
+Required Components:
+    * Arduino MEGA 2560 Board
+    * Adafruit display
+    * SD Card (formatted correctly)
+    * Handful of wires
+    * Joystick component
+
+Wiring Instructions:
+
+     ARDUINO PINS <--> DISPLAY PINS
+    --------------------------------
+                 GND <--> GND
+                  5V <--> Vin
+                  52 <--> CLK
+                  50 <--> MISO
+                  51 <--> MOSI
+                  10 <--> CS
+                  9  <--> D/C
+                  A2 <--> Y+
+                  4  <--> X+
+                  5  <--> Y-
+                  A3 <--> X-
+                  6  <--> CCS
+
+       ARDUINO PINS <--> JOYSTICK
+    --------------------------------
+                 GND <--> GND
+                  5V <--> +5V
+                  A1 <--> VRx
+                  A0 <--> VRy
+                  2  <--> SW
+
+Running Instructions:
+    In order to correctly run the program, you must ensure your microSD card is formatted correctly and inserted correctly into the tft display. You must then call the program while being in the correct directory in terminal with the file 'restaurant-finder1.cpp' and use the command: 'make upload'. The program will then compile and upload to your Arduino and start running.
+
+How to use:
+    The program will display a simple GUI on the tft display. Simply move the cursor around (using the joystick) to traverse the map. If you click the joystick, a list of the 30 closest restaurants should appear. You may then choose your favourite restaurant from the list and click the joystick once it is highlighted. The display should show the map again, but the cursor will be at the location of the selected map. Additionally, you may tap the screen to show the location of all the restaurants currently on your screen.
+
+Notes and Assumptions:
+    The functions lon_to_x and lat_to_y are the same versions provided in the assignment description. The program assumes that your SD card has been formatted properly, with the correct files ready to be accessed by this program. When reading in the restaurants to see which ones are on the screen currently, we do a linear scan as it was unclear from the initial rubric. The list is also scrollable both ways, meaning it will wrap the cursor around the list if the user goes too far up or too far down.
