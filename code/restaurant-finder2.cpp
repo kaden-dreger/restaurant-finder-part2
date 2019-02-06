@@ -147,7 +147,7 @@ void updateButtons(int num) {
     tft.drawRect(272, DISPLAY_HEIGHT/2 + 1, 48, DISPLAY_HEIGHT/2 - 1, tft.color565(0, 255, 0));
     if (num == 0 || num == 2) {
         tft.fillRect(273, 1, 46, DISPLAY_HEIGHT/2 - 3,tft.color565(255, 255, 255));
-        tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/4 - 8, (char) star, ILI9341_BLACK, ILI9341_BLACK, 2);
+        tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/4 - 8, star + 48, ILI9341_BLACK, ILI9341_BLACK, 2);
     }
     if (num == 1 || num == 2) {
         tft.fillRect(273, DISPLAY_HEIGHT/2 + 2, 46, DISPLAY_HEIGHT/2 - 3, tft.color565(255, 255, 255));
@@ -156,12 +156,13 @@ void updateButtons(int num) {
                 tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/2 + (i*20) + 15, text[i], ILI9341_BLACK, ILI9341_WHITE, 2);
             }
         } else if (sort == 1) {
-            for (int i = 5; i < 10; i++) {
-                tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/2 + ((i/5)*20), text[i], ILI9341_BLACK, ILI9341_WHITE, 2);
+            for (int i = 0; i < 5; i++) {
+                tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/2 + (i*20) + 15, text[i+5], ILI9341_BLACK, ILI9341_WHITE, 2);
             }
         } else {
-            for (int i = 10; i < 14; i++) {
-                tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/2 + (i*30/10), text[i], ILI9341_BLACK, ILI9341_WHITE, 2);
+            for (int i = 0; i < 4; i++) {
+                tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/2 + (i*20) + 20, text[i+10], ILI9341_BLACK, ILI9341_WHITE, 2);
+                Serial.println(text[i]);
             }
         }
     }
@@ -553,6 +554,7 @@ call the drawCirlces function to display dots at the restaurant locations.
             }
             updateButtons(1);
         }
+        delay(200);
     }
 }
 
