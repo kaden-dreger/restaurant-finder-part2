@@ -474,21 +474,6 @@ then list the closest 30 to the display.
         Serial.print(time);
         Serial.println(" ms");
     }
-
-    // Reading in the closest 30 restaurants
-    for (int16_t j = 0; j < 30; j++) {
-        getRestaurant(restDist[j].index, &r);
-        if (j !=  selectedRest) {  // not  highlighted
-            //  white  characters  on  black  background
-            tft.setTextColor(0xFFFF , 0x0000);
-        } else {  // highlighted
-            //  black  characters  on  white  background
-            tft.setTextColor(0x0000 , 0xFFFF);
-        }
-        tft.print(r.name);  // Printing each name to the display
-        tft.print("\n");
-    }
-    tft.print("\n");
 }
 
 
@@ -524,7 +509,7 @@ screen is touched.
 // It draws the name at the given index to the display,
 // assumes the text size is already 2, that text
 // is not wrapping, and 0 <= index < number of names in the list
-void drawName(uint16_t index) {
+void drawName(uint16_t location, uint16_t index) {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 The drawName function takes one paramater:
     index: This gets the index of the restaurant.
@@ -537,9 +522,9 @@ class.
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     restaurant rest;
     getRestaurant(restDist[index].index, &rest);
-    tft.setCursor(0, index*8);
-    tft.fillRect(0, index*8, DISPLAY_WIDTH, 8, tft.color565(0, 0, 0));
-    if (index == selectedRest) {
+    tft.setCursor(0, location*8);
+    tft.fillRect(0, location*8, DISPLAY_WIDTH, 8, tft.color565(0, 0, 0));
+    if (location == selectedRest) {
         tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
     } else {
         tft.setTextColor(ILI9341_WHITE, ILI9341_BLACK);
@@ -563,6 +548,20 @@ is pressed putting the map and cursor at the selected restaurant.
     delay(100);  // to allow the stick to become unpressed
     fetchRests();
     selectedRest = 0;  // Setting the value of the initial restaurant
+    for (int16_t j = 0; j < 30; j++) {
+        getRestaurant(restDist[j].index, &r);
+        if (j !=  selectedRest) {  // not  highlighted
+            //  white  characters  on  black  background
+            tft.setTextColor(0xFFFF , 0x0000);
+        } else {  // highlighted
+            //  black  characters  on  white  background
+            tft.setTextColor(0x0000 , 0xFFFF);
+        }
+        tft.print(r.name);  // Printing each name to the display
+        tft.print("\n");
+    }
+    tft.print("\n");
+    int screen = 0;
     while (true) {
         // Checking the input from the joystick
         xVal = analogRead(JOY_HORIZ);
@@ -570,22 +569,37 @@ is pressed putting the map and cursor at the selected restaurant.
         joyClick = digitalRead(JOY_SEL);
         delay(50);  // Allowing for scrolling to be at a normal speed
         uint16_t prevHighlight = selectedRest;
-
         if (yVal < JOY_CENTER - JOY_DEADZONE) {
             selectedRest -= 1;  // Go to the previous restaurant
             selectedRest = constrain(selectedRest, 0, 29);
-            drawName(prevHighlight);
-            drawName(selectedRest);
+            drawName(prevHighlight, prevHighlight+screen);
+            drawName(selectedRest, selectedRest + screen);
         } else if (yVal > JOY_CENTER + JOY_DEADZONE) {
             if (selectedRest == 29) {
+                screen += 30;
+                tft.fillScreen(0);
+                tft.setCursor(0,0);
+                for (int16_t j = screen; j < screen + 30; j++) {
+                    getRestaurant(restDist[j].index, &r);
+                    if (j !=  selectedRest) {  // not  highlighted
+                        //  white  characters  on  black  background
+                        tft.setTextColor(0xFFFF , 0x0000);
+                    } else {  // highlighted
+                        //  black  characters  on  white  background
+                        tft.setTextColor(0x0000 , 0xFFFF);
+                    }
+                    tft.print(r.name);  // Printing each name to the display
+                    tft.print("\n");
+                }
+                tft.print("\n");
                 selectedRest = 0;
-                drawName(prevHighlight);
-                drawName(selectedRest);
+                drawName(prevHighlight, prevHighlight+screen);
+                drawName(selectedRest, selectedRest + screen);
             } else {
                 selectedRest += 1;  // Go to the next restaurant
                 selectedRest = constrain(selectedRest, 0, 29);
-                drawName(prevHighlight);
-                drawName(selectedRest);
+                drawName(prevHighlight, prevHighlight+screen);
+                drawName(selectedRest, selectedRest + screen);
             }
         }
         // If the joystick is pressed again
