@@ -80,7 +80,9 @@ int CURSORY = DISPLAY_HEIGHT/2;
 int MAPX = YEG_SIZE/2 - (DISPLAY_WIDTH - 48)/2;
 int MAPY = YEG_SIZE/2 - DISPLAY_HEIGHT/2;
 int star = 1;
-int sort = 0;
+int sort = 0;  // 0 = qsort
+               // 1 = isort
+               // 2 = both 
 
 uint32_t nowBlock;
 int squareSize = 8;  // THe size of the dots after the screen is touched
@@ -141,12 +143,13 @@ void setup() {
     redrawCursor(ILI9341_RED);  // Draws the cursor to the screen
 }
 
+
 void updateButtons(int num) {
     char text[] = {'Q', 'S', 'O', 'R', 'T', 'I', 'S', 'O', 'R', 'T', 'B', 'O', 'T', 'H'};
-    tft.fillRect(272, 0, 48, DISPLAY_HEIGHT/2 - 1, tft.color565(255, 0, 0));
-    tft.fillRect(272, DISPLAY_HEIGHT/2 + 1, 48, DISPLAY_HEIGHT/2 - 1, tft.color565(0, 255, 0));
+    tft.drawRect(272, 0, 48, DISPLAY_HEIGHT/2 - 1, tft.color565(255, 0, 0));
+    tft.drawRect(272, DISPLAY_HEIGHT/2 + 1, 48, DISPLAY_HEIGHT/2 - 1, tft.color565(0, 255, 0));
     if (num == 0 || num == 2) {
-        tft.fillRect(274, 2, 44, DISPLAY_HEIGHT/2 - 6,tft.color565(255, 255, 255));
+        tft.fillRect(274, 2, 44, DISPLAY_HEIGHT/2 - 5,tft.color565(255, 255, 255));
         tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/4 - 8, star + 48, ILI9341_BLACK, ILI9341_BLACK, 2);
     }
     if (num == 1 || num == 2) {
@@ -167,6 +170,7 @@ void updateButtons(int num) {
         }
     }
 }
+
 
 struct restaurant {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -343,7 +347,9 @@ This array does not return anything, instead it modifies the array in memory.
     array[m - 1] = temp;
 }
 
+void qSort(RestDist *array) {
 
+}
 void iSort(RestDist *array) {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 The iSort struct is responsible for implementing the pseudocode given in class,
