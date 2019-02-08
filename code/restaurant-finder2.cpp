@@ -80,9 +80,8 @@ int CURSORY = DISPLAY_HEIGHT/2;
 int MAPX = YEG_SIZE/2 - (DISPLAY_WIDTH - 48)/2;
 int MAPY = YEG_SIZE/2 - DISPLAY_HEIGHT/2;
 int star = 1;
-int sort = 0;  // 0 = qsort
-               // 1 = isort
-               // 2 = both 
+int sort = 0;
+int numRests = 0;
 
 uint32_t nowBlock;
 int squareSize = 8;  // THe size of the dots after the screen is touched
@@ -330,6 +329,7 @@ uint16_t  index;  // index  of  restaurant  from 0 to  NUM_RESTAURANTS -1
 uint16_t  dist;   //  Manhatten  distance  to  cursor  position
 };
 RestDist restDist[NUM_RESTAURANTS];
+RestDist restiDist[NUM_RESTAURANTS];
 
 
 void swap(RestDist* array, int m) {
@@ -347,9 +347,39 @@ This array does not return anything, instead it modifies the array in memory.
     array[m - 1] = temp;
 }
 
-void qSort(RestDist *array) {
 
+
+
+void qSort(RestDist *arr, int16_t low, int16_t high) {
+    int16_t i = low, j = high;
+
+    uint16_t pivot = arr[(low + high) / 2].dist;
+
+    while (i <= j) {
+        while (arr[i].dist < pivot) {
+            i++;
+        }
+        while (arr[j].dist > pivot) {
+            j--;
+        }
+
+        if (i <= j) {
+            RestDist temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+            i++;
+            j--;
+        }
+    }
+
+    if (low < j) {
+        qSort(&arr[0], low, j);
+    }
+    if (i < high) {
+        qSort(&arr[0], i, high);
+    }
 }
+
 void iSort(RestDist *array) {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 The iSort struct is responsible for implementing the pseudocode given in class,
@@ -381,11 +411,17 @@ then list the closest 30 to the display.
     tft.setCursor(0, 0);  // where  the  characters  will be  displayed
     tft.setTextWrap(false);
     int selectedRest = 0;
+    int start, end, time;
+
     // Reading in ALL the restaurants
     Serial.println("Restaurants read in...");
     for (int16_t i = 0; i < NUM_RESTAURANTS; i++) {
-        restDist[i].index = i;  // Saving the index of each restaurant
+        //restDist[i].index = i;  // Saving the index of each restaurant
         getRestaurant(i, &r);
+        if (r.rating >= star) {
+            restDist[numRests].index = i;
+            numRests++;
+        }
         // Getting the location of each restaurant
         int16_t restY = lat_to_y(r.lat);
         int16_t restX = lon_to_x(r.lon);
@@ -393,8 +429,34 @@ then list the closest 30 to the display.
         restDist[i].dist = abs((MAPX + CURSORX)-restX) + abs((MAPY +
             CURSORY) - restY);
     }
-    // Insertion sort
-    iSort(&restDist[0]);
+    if (sort == 0 || sort == 2) {
+        for (int m = 0; m < NUM_RESTAURANTS; m++){
+            restqDist[m] = restDist[m];
+        }
+        start = millis();
+        qSort(&restqDist[0], 0, numRests);
+        end = millis();
+        time = end - start;
+        Serial.print("qsort ");
+        Serial.print(numRests);
+        Serial.print(" restaurants: ");
+        Serial.print(time);
+        Serial.println(" ms");
+    }
+    if (sort == 1 || sort == 2) {
+        for (int j = 0; j < NUM_RESTAURANTS; j++){
+            restiDist[j] = restDist[j];
+        }
+        start = millis();
+        iSort(&restiDist[0]);
+        end = millis();
+        time = end - start;
+        Serial.print("isort ");
+        Serial.print(numRests);
+        Serial.print(" restaurants: ");
+        Serial.print(time);
+        Serial.println(" ms");
+    }
 
     // Reading in the closest 30 restaurants
     for (int16_t j = 0; j < 30; j++) {
@@ -560,7 +622,7 @@ call the drawCirlces function to display dots at the restaurant locations.
             }
             updateButtons(1);
         }
-        delay(200);
+        delay(300);
     }
 }
 
