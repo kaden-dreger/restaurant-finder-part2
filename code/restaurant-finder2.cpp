@@ -164,7 +164,6 @@ void updateButtons(int num) {
         } else {
             for (int i = 0; i < 4; i++) {
                 tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/2 + (i*20) + 20, text[i+10], ILI9341_BLACK, ILI9341_WHITE, 2);
-                Serial.println(text[i]);
             }
         }
     }
@@ -329,7 +328,7 @@ uint16_t  index;  // index  of  restaurant  from 0 to  NUM_RESTAURANTS -1
 uint16_t  dist;   //  Manhatten  distance  to  cursor  position
 };
 RestDist restDist[NUM_RESTAURANTS];
-RestDist restiDist[NUM_RESTAURANTS];
+//RestDist rest1Dist[NUM_RESTAURANTS];
 
 
 void swap(RestDist* array, int m) {
@@ -412,29 +411,30 @@ then list the closest 30 to the display.
     tft.setTextWrap(false);
     int selectedRest = 0;
     int start, end, time;
-
     // Reading in ALL the restaurants
-    Serial.println("Restaurants read in...");
-    for (int16_t i = 0; i < NUM_RESTAURANTS; i++) {
-        //restDist[i].index = i;  // Saving the index of each restaurant
-        getRestaurant(i, &r);
-        if (r.rating >= star) {
-            restDist[numRests].index = i;
-            numRests++;
-        }
-        // Getting the location of each restaurant
-        int16_t restY = lat_to_y(r.lat);
-        int16_t restX = lon_to_x(r.lon);
-        // Calculating and saving the manhattan distances of each restaurant
-        restDist[i].dist = abs((MAPX + CURSORX)-restX) + abs((MAPY +
-            CURSORY) - restY);
-    }
     if (sort == 0 || sort == 2) {
+        /*
         for (int m = 0; m < NUM_RESTAURANTS; m++){
             restqDist[m] = restDist[m];
         }
+        */
+        numRests = 0;
+        for (int16_t i = 0; i < NUM_RESTAURANTS; i++) {
+            getRestaurant(i, &r);
+            r.rating = max(floor((r.rating+ 1)/2),1);
+            if (r.rating >= star) {
+            restDist[numRests].index = i;
+            numRests++;
+            }
+            // Getting the location of each restaurant
+            int16_t restY = lat_to_y(r.lat);
+            int16_t restX = lon_to_x(r.lon);
+            // Calculating and saving the manhattan distances of each restaurant
+            restDist[numRests].dist = abs((MAPX + CURSORX)-restX) + abs((MAPY +
+                CURSORY) - restY);
+        }
         start = millis();
-        qSort(&restqDist[0], 0, numRests);
+        qSort(&restDist[0], 0, numRests);
         end = millis();
         time = end - start;
         Serial.print("qsort ");
@@ -444,11 +444,28 @@ then list the closest 30 to the display.
         Serial.println(" ms");
     }
     if (sort == 1 || sort == 2) {
+        /*
         for (int j = 0; j < NUM_RESTAURANTS; j++){
             restiDist[j] = restDist[j];
         }
+        */
+        numRests = 0;
+        for (int16_t j = 0; j < NUM_RESTAURANTS; j++) {
+            getRestaurant(j, &r);
+            r.rating = max(floor((r.rating+ 1)/2),1);
+            if (r.rating >= star) {
+            restDist[numRests].index = j;
+            numRests++;
+            }
+            // Getting the location of each restaurant
+            int16_t restY = lat_to_y(r.lat);
+            int16_t restX = lon_to_x(r.lon);
+            // Calculating and saving the manhattan distances of each restaurant
+            restDist[numRests].dist = abs((MAPX + CURSORX)-restX) + abs((MAPY +
+                CURSORY) - restY);
+        }
         start = millis();
-        iSort(&restiDist[0]);
+        iSort(&restDist[0]);
         end = millis();
         time = end - start;
         Serial.print("isort ");
