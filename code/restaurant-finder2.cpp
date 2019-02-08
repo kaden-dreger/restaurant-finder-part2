@@ -430,7 +430,7 @@ then list the closest 30 to the display.
             int16_t restY = lat_to_y(r.lat);
             int16_t restX = lon_to_x(r.lon);
             // Calculating and saving the manhattan distances of each restaurant
-            restDist[numRests].dist = abs((MAPX + CURSORX)-restX) + abs((MAPY +
+            restDist[numRests - 1].dist = abs((MAPX + CURSORX)-restX) + abs((MAPY +
                 CURSORY) - restY);
         }
         start = millis();
@@ -454,14 +454,14 @@ then list the closest 30 to the display.
             getRestaurant(j, &r);
             r.rating = max(floor((r.rating+ 1)/2),1);
             if (r.rating >= star) {
-            restDist[numRests].index = j;
+            restDist[numRests - 1].index = j;
             numRests++;
             }
             // Getting the location of each restaurant
             int16_t restY = lat_to_y(r.lat);
             int16_t restX = lon_to_x(r.lon);
             // Calculating and saving the manhattan distances of each restaurant
-            restDist[numRests].dist = abs((MAPX + CURSORX)-restX) + abs((MAPY +
+            restDist[numRests - 1].dist = abs((MAPX + CURSORX)-restX) + abs((MAPY +
                 CURSORY) - restY);
         }
         start = millis();
