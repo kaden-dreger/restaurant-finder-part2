@@ -571,12 +571,18 @@ is pressed putting the map and cursor at the selected restaurant.
         uint16_t prevHighlight = selectedRest;
         if (yVal < JOY_CENTER - JOY_DEADZONE) {
             selectedRest -= 1;  // Go to the previous restaurant
-            selectedRest = constrain(selectedRest, 0, 29);
+            if (selectedRest < 0) {
+                screen -= 30;
+            }
             drawName(prevHighlight, prevHighlight+screen);
             drawName(selectedRest, selectedRest + screen);
         } else if (yVal > JOY_CENTER + JOY_DEADZONE) {
             if (selectedRest == 29) {
                 screen += 30;
+                if (screen + selectedRest > numRests) {
+                    screen = 0;
+                    selectedRest = 0;
+                }
                 tft.fillScreen(0);
                 tft.setCursor(0,0);
                 for (int16_t j = screen; j < screen + 30; j++) {
