@@ -579,13 +579,15 @@ is pressed putting the map and cursor at the selected restaurant.
         } else if (yVal > JOY_CENTER + JOY_DEADZONE) {
             if (selectedRest == 29) {
                 screen += 30;
-                if (screen + selectedRest > numRests) {
-                    screen = 0;
-                    selectedRest = 0;
-                }
                 tft.fillScreen(0);
                 tft.setCursor(0,0);
-                for (int16_t j = screen; j < screen + 30; j++) {
+                int max = screen + 30;
+                if (max >= numRests) {
+                    max = numRests;
+                }
+                Serial.print(screen);
+                Serial.println(max);
+                for (int16_t j = screen; j < max; j++) {
                     getRestaurant(restDist[j].index, &r);
                     if (j !=  selectedRest) {  // not  highlighted
                         //  white  characters  on  black  background
@@ -604,6 +606,25 @@ is pressed putting the map and cursor at the selected restaurant.
             } else {
                 selectedRest += 1;  // Go to the next restaurant
                 selectedRest = constrain(selectedRest, 0, 29);
+                if (screen + selectedRest > numRests) {
+                    screen = 0;
+                    selectedRest = 0;
+                    tft.fillScreen(0);
+                    tft.setCursor(0,0);
+                    for (int16_t j = 0; j < 30; j++) {
+                        getRestaurant(restDist[j].index, &r);
+                        if (j !=  selectedRest) {  // not  highlighted
+                            //  white  characters  on  black  background
+                            tft.setTextColor(0xFFFF , 0x0000);
+                        } else {  // highlighted
+                            //  black  characters  on  white  background
+                            tft.setTextColor(0x0000 , 0xFFFF);
+                        }
+                        tft.print(r.name);  // Printing each name to the display
+                        tft.print("\n");
+                    }
+                    tft.print("\n");
+                }
                 drawName(prevHighlight, prevHighlight+screen);
                 drawName(selectedRest, selectedRest + screen);
             }
