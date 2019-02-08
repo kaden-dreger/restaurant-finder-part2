@@ -424,14 +424,14 @@ then list the closest 30 to the display.
             r.rating = max(floor((r.rating+ 1)/2),1);
             if (r.rating >= star) {
             restDist[numRests].index = i;
-            numRests++;
-            }
             // Getting the location of each restaurant
             int16_t restY = lat_to_y(r.lat);
             int16_t restX = lon_to_x(r.lon);
             // Calculating and saving the manhattan distances of each restaurant
-            restDist[numRests - 1].dist = abs((MAPX + CURSORX)-restX) + abs((MAPY +
+            restDist[numRests].dist = abs((MAPX + CURSORX)-restX) + abs((MAPY +
                 CURSORY) - restY);
+            numRests++;
+            }
         }
         start = millis();
         qSort(&restDist[0], 0, numRests);
@@ -454,15 +454,15 @@ then list the closest 30 to the display.
             getRestaurant(j, &r);
             r.rating = max(floor((r.rating+ 1)/2),1);
             if (r.rating >= star) {
-            restDist[numRests - 1].index = j;
-            numRests++;
-            }
+            restDist[numRests].index = j;
             // Getting the location of each restaurant
             int16_t restY = lat_to_y(r.lat);
             int16_t restX = lon_to_x(r.lon);
             // Calculating and saving the manhattan distances of each restaurant
-            restDist[numRests - 1].dist = abs((MAPX + CURSORX)-restX) + abs((MAPY +
+            restDist[numRests].dist = abs((MAPX + CURSORX)-restX) + abs((MAPY +
                 CURSORY) - restY);
+            numRests++;
+            }
         }
         start = millis();
         iSort(&restDist[0]);
@@ -507,10 +507,11 @@ screen is touched.
         getRestaurant(i, &r);
         int16_t restY = lat_to_y(r.lat);
         int16_t restX = lon_to_x(r.lon);
+        r.rating = max(floor((r.rating+ 1)/2),1);
         // Checking if the restaurants are on the screen
         if ((restX > MAPX + squareSize && restX < MAPX + DISPLAY_WIDTH - 48 -
              squareSize) && (restY > MAPY + squareSize && restY < MAPY +
-              DISPLAY_HEIGHT - squareSize)) {
+              DISPLAY_HEIGHT - squareSize) && r.rating >= star) {
             // Drawing the dots
             tft.fillRect(restX - MAPX, restY - MAPY, squareSize, squareSize,
                 ILI9341_BLUE);
