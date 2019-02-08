@@ -143,14 +143,14 @@ void setup() {
 
 void updateButtons(int num) {
     char text[] = {'Q', 'S', 'O', 'R', 'T', 'I', 'S', 'O', 'R', 'T', 'B', 'O', 'T', 'H'};
-    tft.drawRect(272, 0, 48, DISPLAY_HEIGHT/2 - 1, tft.color565(255, 0, 0));
-    tft.drawRect(272, DISPLAY_HEIGHT/2 + 1, 48, DISPLAY_HEIGHT/2 - 1, tft.color565(0, 255, 0));
+    tft.fillRect(272, 0, 48, DISPLAY_HEIGHT/2 - 1, tft.color565(255, 0, 0));
+    tft.fillRect(272, DISPLAY_HEIGHT/2 + 1, 48, DISPLAY_HEIGHT/2 - 1, tft.color565(0, 255, 0));
     if (num == 0 || num == 2) {
-        tft.fillRect(273, 1, 46, DISPLAY_HEIGHT/2 - 3,tft.color565(255, 255, 255));
+        tft.fillRect(274, 2, 44, DISPLAY_HEIGHT/2 - 6,tft.color565(255, 255, 255));
         tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/4 - 8, star + 48, ILI9341_BLACK, ILI9341_BLACK, 2);
     }
     if (num == 1 || num == 2) {
-        tft.fillRect(273, DISPLAY_HEIGHT/2 + 2, 46, DISPLAY_HEIGHT/2 - 3, tft.color565(255, 255, 255));
+        tft.fillRect(274, DISPLAY_HEIGHT/2 + 3, 44, DISPLAY_HEIGHT/2 - 5, tft.color565(255, 255, 255));
         if (sort == 0) {
             for (int i = 0; i < 5; i++) {
                 tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/2 + (i*20) + 15, text[i], ILI9341_BLACK, ILI9341_WHITE, 2);
