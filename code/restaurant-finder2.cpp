@@ -597,8 +597,8 @@ is pressed putting the map and cursor at the selected restaurant.
                 drawName(selectedRest, selectedRest + screen);
             } else {
                 selectedRest += 1;  // Go to the next restaurant
-                selectedRest = constrain(selectedRest, 0, 29);
-                if (screen + selectedRest > numRests) {
+                //selectedRest = constrain(selectedRest, 0, 29);
+                if (screen + selectedRest + 1 > numRests) {
                     screen = 0;
                     selectedRest = 0;
                     fillNames(0, 30);
