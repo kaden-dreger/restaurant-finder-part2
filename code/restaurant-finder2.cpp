@@ -426,17 +426,14 @@ then list the closest 30 to the display.
     tft.setTextWrap(false);
     int selectedRest = 0;
     int start, end, time;
-    // Reading in ALL the restaurants
+    //
     if (sort == 0 || sort == 2) {
-        /*
-        for (int m = 0; m < NUM_RESTAURANTS; m++){
-            restqDist[m] = restDist[m];
-        }
-        */
         numRests = 0;
         sortFetch();
         start = millis();
         qSort(&restDist[0], 0, numRests);
+        Serial.println(restDist[0].index);
+        Serial.println(restDist[1].index);
         end = millis();
         time = end - start;
         Serial.print("qsort ");
@@ -446,15 +443,12 @@ then list the closest 30 to the display.
         Serial.println(" ms");
     }
     if (sort == 1 || sort == 2) {
-        /*
-        for (int j = 0; j < NUM_RESTAURANTS; j++){
-            restiDist[j] = restDist[j];
-        }
-        */
         numRests = 0;
         sortFetch();
         start = millis();
         iSort(&restDist[0]);
+        Serial.println(restDist[0].index);
+        Serial.println(restDist[1].index);
         end = millis();
         time = end - start;
         Serial.print("isort ");
