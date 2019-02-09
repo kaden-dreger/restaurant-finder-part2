@@ -346,9 +346,56 @@ This array does not return anything, instead it modifies the array in memory.
     array[m - 1] = temp;
 }
 
+// A utility function to swap two elements 
+void qswap(RestDist* a, RestDist* b) 
+{ 
+    RestDist t = *a; 
+    *a = *b; 
+    *b = t; 
+} 
 
+/* This function takes last element as pivot, places 
+the pivot element at its correct position in sorted 
+    array, and places all smaller (smaller than pivot) 
+to left of pivot and all greater elements to right 
+of pivot */
+int partition (RestDist arr[], int16_t low, int16_t high) 
+{ 
+    int16_t pivot = arr[high].dist; // pivot 
+    int16_t i = (low - 1); // Index of smaller element 
 
+    for (int16_t j = low; j <= high- 1; j++) 
+    { 
+        // If current element is smaller than or 
+        // equal to pivot 
+        if (arr[j].dist <= pivot) 
+        { 
+            i++; // increment index of smaller element 
+            qswap(&arr[i], &arr[j]); 
+        } 
+    } 
+    qswap(&arr[i + 1], &arr[high]); 
+    return (i + 1); 
+} 
 
+/* The main function that implements QuickSort 
+arr[] --> Array to be sorted, 
+low --> Starting index, 
+high --> Ending index */
+void qSort(RestDist arr[], int16_t low, int16_t high) { 
+    if (low < high) { 
+        /* pi is partitioning index, arr[p] is now 
+        at right place */
+        int16_t pi = partition(arr, low, high); 
+
+        // Separately sort elements before 
+        // partition and after partition 
+        qSort(arr, low, pi - 1); 
+        qSort(arr, pi + 1, high); 
+    } 
+} 
+
+/*
 void qSort(RestDist *arr, int16_t low, int16_t high) {
     int16_t i = low, j = high;
 
@@ -378,7 +425,7 @@ void qSort(RestDist *arr, int16_t low, int16_t high) {
         qSort(&arr[0], i, high);
     }
 }
-
+*/
 void iSort(RestDist *array) {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 The iSort struct is responsible for implementing the pseudocode given in class,
@@ -413,6 +460,8 @@ void sortFetch() {
         }
     }
 }
+
+
 void fetchRests() {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 The fetchRests function takes no paramaters:
@@ -430,10 +479,10 @@ then list the closest 30 to the display.
     if (sort == 0 || sort == 2) {
         numRests = 0;
         sortFetch();
+        int n = sizeof(restDist)/sizeof(restDist[0]); 
         start = millis();
-        qSort(&restDist[0], 0, numRests);
-        Serial.println(restDist[0].index);
-        Serial.println(restDist[1].index);
+        qSort(restDist, 0, n-1);
+        //qSort(&restDist[0], 0, numRests);
         end = millis();
         time = end - start;
         Serial.print("qsort ");
@@ -447,8 +496,6 @@ then list the closest 30 to the display.
         sortFetch();
         start = millis();
         iSort(&restDist[0]);
-        Serial.println(restDist[0].index);
-        Serial.println(restDist[1].index);
         end = millis();
         time = end - start;
         Serial.print("isort ");
@@ -518,7 +565,7 @@ class.
 void fillNames(uint16_t initial, uint16_t final) {
     tft.fillScreen(0);
     tft.setCursor(0,0);
-    for (int16_t j = initial; j < final; j++) {
+    for (uint16_t j = initial; j < final; j++) {
         getRestaurant(restDist[j].index, &r);
         if (j !=  selectedRest) {  // not  highlighted
             //  white  characters  on  black  background
