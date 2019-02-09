@@ -532,6 +532,24 @@ class.
     tft.println(rest.name);
 }
 
+void fillNames(uint16_t initial, uint16_t final) {
+    tft.fillScreen(0);
+    tft.setCursor(0,0);
+    for (int16_t j = initial; j < final; j++) {
+        getRestaurant(restDist[j].index, &r);
+        if (j !=  selectedRest) {  // not  highlighted
+            //  white  characters  on  black  background
+            tft.setTextColor(0xFFFF , 0x0000);
+        } else {  // highlighted
+            //  black  characters  on  white  background
+            tft.setTextColor(0x0000 , 0xFFFF);
+        }
+        tft.print(r.name);  // Printing each name to the display
+        tft.print("\n");
+    }
+    tft.print("\n");
+}
+
 
 void restaurantList() {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -548,19 +566,7 @@ is pressed putting the map and cursor at the selected restaurant.
     delay(100);  // to allow the stick to become unpressed
     fetchRests();
     selectedRest = 0;  // Setting the value of the initial restaurant
-    for (int16_t j = 0; j < 30; j++) {
-        getRestaurant(restDist[j].index, &r);
-        if (j !=  selectedRest) {  // not  highlighted
-            //  white  characters  on  black  background
-            tft.setTextColor(0xFFFF , 0x0000);
-        } else {  // highlighted
-            //  black  characters  on  white  background
-            tft.setTextColor(0x0000 , 0xFFFF);
-        }
-        tft.print(r.name);  // Printing each name to the display
-        tft.print("\n");
-    }
-    tft.print("\n");
+    fillNames(0, 30);
     int screen = 0;
     while (true) {
         // Checking the input from the joystick
@@ -579,27 +585,13 @@ is pressed putting the map and cursor at the selected restaurant.
         } else if (yVal > JOY_CENTER + JOY_DEADZONE) {
             if (selectedRest == 29) {
                 screen += 30;
-                tft.fillScreen(0);
-                tft.setCursor(0,0);
                 int max = screen + 30;
                 if (max >= numRests) {
                     max = numRests;
                 }
                 Serial.print(screen);
                 Serial.println(max);
-                for (int16_t j = screen; j < max; j++) {
-                    getRestaurant(restDist[j].index, &r);
-                    if (j !=  selectedRest) {  // not  highlighted
-                        //  white  characters  on  black  background
-                        tft.setTextColor(0xFFFF , 0x0000);
-                    } else {  // highlighted
-                        //  black  characters  on  white  background
-                        tft.setTextColor(0x0000 , 0xFFFF);
-                    }
-                    tft.print(r.name);  // Printing each name to the display
-                    tft.print("\n");
-                }
-                tft.print("\n");
+                fillNames(screen, max);
                 selectedRest = 0;
                 drawName(prevHighlight, prevHighlight+screen);
                 drawName(selectedRest, selectedRest + screen);
@@ -609,21 +601,7 @@ is pressed putting the map and cursor at the selected restaurant.
                 if (screen + selectedRest > numRests) {
                     screen = 0;
                     selectedRest = 0;
-                    tft.fillScreen(0);
-                    tft.setCursor(0,0);
-                    for (int16_t j = 0; j < 30; j++) {
-                        getRestaurant(restDist[j].index, &r);
-                        if (j !=  selectedRest) {  // not  highlighted
-                            //  white  characters  on  black  background
-                            tft.setTextColor(0xFFFF , 0x0000);
-                        } else {  // highlighted
-                            //  black  characters  on  white  background
-                            tft.setTextColor(0x0000 , 0xFFFF);
-                        }
-                        tft.print(r.name);  // Printing each name to the display
-                        tft.print("\n");
-                    }
-                    tft.print("\n");
+                    fillNames(0, 30);
                 }
                 drawName(prevHighlight, prevHighlight+screen);
                 drawName(selectedRest, selectedRest + screen);
