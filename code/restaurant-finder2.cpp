@@ -575,37 +575,35 @@ is pressed putting the map and cursor at the selected restaurant.
         joyClick = digitalRead(JOY_SEL);
         delay(50);  // Allowing for scrolling to be at a normal speed
         uint16_t prevHighlight = selectedRest;
-        if (yVal < JOY_CENTER - JOY_DEADZONE) {
-            selectedRest -= 1;  // Go to the previous restaurant
-            if (selectedRest < 0) {
-                screen -= 30;
+        if (yVal < JOY_CENTER - JOY_DEADZONE || yVal > JOY_CENTER + JOY_DEADZONE) {
+            if (yVal < JOY_CENTER - JOY_DEADZONE) {
+                selectedRest -= 1;  // Go to the previous restaurant
+                if (selectedRest < 0) {
+                    screen -= 30;
+                }
+            } else if (yVal > JOY_CENTER + JOY_DEADZONE) {
+                if (selectedRest == 29) {
+                    screen += 30;
+                    int max = screen + 30;
+                    if (max >= numRests) {
+                        max = numRests;
+                    }
+                    Serial.print(screen);
+                    Serial.println(max);
+                    fillNames(screen, max);
+                    selectedRest = 0;
+                } else {
+                    selectedRest += 1;  // Go to the next restaurant
+                    //selectedRest = constrain(selectedRest, 0, 29);
+                    if (screen + selectedRest + 1 > numRests) {
+                        screen = 0;
+                        selectedRest = 0;
+                        fillNames(0, 30);
+                    }
+                }
             }
             drawName(prevHighlight, prevHighlight+screen);
             drawName(selectedRest, selectedRest + screen);
-        } else if (yVal > JOY_CENTER + JOY_DEADZONE) {
-            if (selectedRest == 29) {
-                screen += 30;
-                int max = screen + 30;
-                if (max >= numRests) {
-                    max = numRests;
-                }
-                Serial.print(screen);
-                Serial.println(max);
-                fillNames(screen, max);
-                selectedRest = 0;
-                drawName(prevHighlight, prevHighlight+screen);
-                drawName(selectedRest, selectedRest + screen);
-            } else {
-                selectedRest += 1;  // Go to the next restaurant
-                //selectedRest = constrain(selectedRest, 0, 29);
-                if (screen + selectedRest + 1 > numRests) {
-                    screen = 0;
-                    selectedRest = 0;
-                    fillNames(0, 30);
-                }
-                drawName(prevHighlight, prevHighlight+screen);
-                drawName(selectedRest, selectedRest + screen);
-            }
         }
         // If the joystick is pressed again
         if (!joyClick) {
