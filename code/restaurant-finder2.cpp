@@ -465,9 +465,9 @@ then list the closest 30 to the display.
     if (sort == 0 || sort == 2) {
         numRests = 0;
         sortFetch();
-        int n = sizeof(restDist)/sizeof(restDist[0]); 
+        //int n = sizeof(restDist)/sizeof(restDist[0]); 
         start = millis();
-        //qSort(restDist, 0, n-1);
+        qSort(restDist, 0, numRests - 1);
         //qSort(&restDist[0], 0, numRests);
         end = millis();
         time = end - start;
