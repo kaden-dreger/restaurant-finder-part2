@@ -410,7 +410,7 @@ sorted, and modifies it in memory without return a value explicitly.
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     int i = 1;
     int j;
-    while (i < NUM_RESTAURANTS) {
+    while (i < numRests) {
         j = i;
         while (j > 0 && array[j - 1].dist > array[j].dist) {
             iswap(array, j);  // swapping the two values
@@ -419,6 +419,7 @@ sorted, and modifies it in memory without return a value explicitly.
         i++;
     }
 }
+
 
 void sortFetch() {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -466,7 +467,7 @@ then list the closest 30 to the display.
         sortFetch();
         int n = sizeof(restDist)/sizeof(restDist[0]); 
         start = millis();
-        qSort(restDist, 0, n-1);
+        //qSort(restDist, 0, n-1);
         //qSort(&restDist[0], 0, numRests);
         end = millis();
         time = end - start;
