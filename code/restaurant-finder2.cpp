@@ -617,6 +617,7 @@ is pressed putting the map and cursor at the selected restaurant.
                     screen -= 30;
                     fillNames(screen, screen + 30);
                     selectedRest = 29;
+
                 }
                 selectedRest = constrain(selectedRest, 0, 29);
             // If the joystick is pressed downward
@@ -646,9 +647,9 @@ is pressed putting the map and cursor at the selected restaurant.
             drawName(prevHighlight, prevHighlight+screen);
             drawName(selectedRest, selectedRest + screen);
             // NEED TO FIX
-            if (max >= numRests) {
-                tft.fillRect(0, 300, DISPLAY_WIDTH, 20, tft.color565(0, 0, 0));
-            }
+        }
+        if (screen + 30 >= numRests) {
+                tft.fillRect(0, 230, DISPLAY_WIDTH, 10, tft.color565(0, 0, 0));
         }
         // If the joystick is pressed again
         if (!joyClick) {
