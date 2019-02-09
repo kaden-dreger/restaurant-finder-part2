@@ -370,6 +370,7 @@ This function does not return anything, instead it modifies the array in memory.
     array[m - 1] = temp;
 }
 
+
 // The following 3 functions are the modified implementation of
 // quciksort on eclass
 void qswap(RestDist* a, RestDist* b) {
@@ -387,9 +388,10 @@ This function does not return anything, instead it modifies the array in memory.
     *b = t;
 }
 
+
 /* This function takes last element as pivot, places
 the pivot element at its correct position in sorted
-    array, and places all smaller (smaller than pivot)
+array, and places all smaller (smaller than pivot)
 to left of pivot and all greater elements to right
 of pivot */
 int partition(RestDist arr[], int16_t low, int16_t high) {
@@ -408,6 +410,7 @@ int partition(RestDist arr[], int16_t low, int16_t high) {
     return (i + 1);
 }
 
+
 /* The main function that implements QuickSort 
 arr[] --> Array to be sorted, 
 low --> Starting index, 
@@ -425,11 +428,15 @@ void qSort(RestDist arr[], int16_t low, int16_t high) {
     }
 }
 
+
 void iSort(RestDist *array) {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 The iSort struct is responsible for implementing the pseudocode given in class,
 following the insertion sort algorithm. It takes in the array that needs to be
 sorted, and modifies it in memory without return a value explicitly.
+
+It takes in the parameters:
+        *array: the pointer to the array wanting to be sorted
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     int i = 1;
     int j;
@@ -571,6 +578,7 @@ class.
     }
     tft.println(rest.name);
 }
+
 
 void fillNames(uint16_t initial, uint16_t final) {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -736,6 +744,17 @@ of the display. It takes in no parameters, nor does it return any value.
     CURSORY = DISPLAY_HEIGHT / 2;
 }
 
+void update() {
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+The update function is responsible for calling our other screen manipulating
+functions in order to update the display in relation to the user input.
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    checkMap();
+    centreCursor();
+    moveMap();
+    redrawCursor(ILI9341_RED);
+}
+
 
 void processJoystick() {
 /*  The point of this function is to use the joystick to move the cursor without
@@ -799,30 +818,18 @@ This function returns nothing.
 
         if (CURSORX <= CURSOR_SIZE/2 && MAPX != 0) {
             MAPX -= DISPLAY_WIDTH - 48;
-            checkMap();
-            centreCursor();
-            moveMap();
-            redrawCursor(ILI9341_RED);
+            update();
         } else if (CURSORX >= (DISPLAY_WIDTH - 48 - CURSOR_SIZE/2 - 1) &&
                    MAPX != YEG_SIZE - DISPLAY_WIDTH - 48) {
             MAPX += DISPLAY_WIDTH - 48;
-            checkMap();
-            centreCursor();
-            moveMap();
-            redrawCursor(ILI9341_RED);
+            update();
         } else if (CURSORY <= CURSOR_SIZE/2 && MAPY != 0) {
             MAPY -= DISPLAY_HEIGHT;
-            checkMap();
-            centreCursor();
-            moveMap();
-            redrawCursor(ILI9341_RED);
+            update();
         } else if (CURSORY >= (DISPLAY_HEIGHT - CURSOR_SIZE/2) &&
                    MAPY != YEG_SIZE - DISPLAY_HEIGHT) {
             MAPY += DISPLAY_HEIGHT;
-            checkMap();
-            centreCursor();
-            moveMap();
-            redrawCursor(ILI9341_RED);
+            update();
         }
     }
     delay(20);
