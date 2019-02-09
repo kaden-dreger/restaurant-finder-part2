@@ -332,23 +332,33 @@ RestDist restDist[NUM_RESTAURANTS];
 //RestDist rest1Dist[NUM_RESTAURANTS];
 
 
-void swap(RestDist* array, int m) {
+void iswap(RestDist* array, int m) {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-The swap function is responsible for swapping two values in a given array.
+The swap function is used for swaping two values in the isort function.
 
 It takes in the parameters:
     array: the array we wish to swap
         m: the index at which the swapping occurs
 
-This array does not return anything, instead it modifies the array in memory.
+This function does not return anything, instead it modifies the array in memory.
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     RestDist temp = array[m];
     array[m] = array[m - 1];
     array[m - 1] = temp;
 }
 
-// A utility function to swap two elements 
-void qswap(RestDist* a, RestDist* b) { 
+// The following 3 functions are the modified implementation of 
+// quciksort on eclass
+void qswap(RestDist* a, RestDist* b) {
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+The swap function is used for swaping two values in the qsort function.
+
+It takes in the parameters:
+    a: the fist element to swap
+    b: the second element to swap
+
+This function does not return anything, instead it modifies the array in memory.
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     RestDist t = *a; 
     *a = *b; 
     *b = t; 
@@ -392,37 +402,6 @@ void qSort(RestDist arr[], int16_t low, int16_t high) {
     } 
 } 
 
-/*
-void qSort(RestDist *arr, int16_t low, int16_t high) {
-    int16_t i = low, j = high;
-
-    uint16_t pivot = arr[(low + high) / 2].dist;
-
-    while (i <= j) {
-        while (arr[i].dist < pivot) {
-            i++;
-        }
-        while (arr[j].dist > pivot) {
-            j--;
-        }
-
-        if (i <= j) {
-            RestDist temp = arr[i];
-            arr[i] = arr[j];
-            arr[j] = temp;
-            i++;
-            j--;
-        }
-    }
-
-    if (low < j) {
-        qSort(&arr[0], low, j);
-    }
-    if (i < high) {
-        qSort(&arr[0], i, high);
-    }
-}
-*/
 void iSort(RestDist *array) {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 The iSort struct is responsible for implementing the pseudocode given in class,
@@ -434,7 +413,7 @@ sorted, and modifies it in memory without return a value explicitly.
     while (i < NUM_RESTAURANTS) {
         j = i;
         while (j > 0 && array[j - 1].dist > array[j].dist) {
-            swap(array, j);  // swapping the two values
+            iswap(array, j);  // swapping the two values
             j--;
         }
         i++;
@@ -442,8 +421,17 @@ sorted, and modifies it in memory without return a value explicitly.
 }
 
 void sortFetch() {
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+It takes in no parameters.
+
+This function returns nothing.
+
+The sortFetch function gathers the required restaurants for sorting. This is
+based on the rating of the restaurants selected.
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     for (int16_t i = 0; i < NUM_RESTAURANTS; i++) {
         getRestaurant(i, &r);
+        // Adjusting the rating to a 1-5 star.
         r.rating = max(floor((r.rating+ 1)/2),1);
         if (r.rating >= star) {
             restDist[numRests].index = i;
@@ -540,6 +528,8 @@ screen is touched.
 void drawName(uint16_t location, uint16_t index) {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 The drawName function takes one paramater:
+    location: This is the point on the screen where the text should be
+              highlighted.
     index: This gets the index of the restaurant.
 
 It does not return any parameters.
@@ -561,8 +551,19 @@ class.
 }
 
 void fillNames(uint16_t initial, uint16_t final) {
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+The fillNames function takes paramaters:
+    initial: This is the starting index of the restarunts to be read in and
+             displayed.
+    final: This is the ending index for the displayed restaurant names.
+
+It does not return any parameters.
+
+The point of this function is to read in the specified restaurants and display
+them to the screen.
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     tft.fillScreen(0);
-    tft.setCursor(0,0);
+    tft.setCursor(0,0);  // Resetting the cursor location
     for (uint16_t j = initial; j < final; j++) {
         getRestaurant(restDist[j].index, &r);
         if (j !=  selectedRest) {  // not  highlighted
@@ -604,19 +605,27 @@ is pressed putting the map and cursor at the selected restaurant.
         joyClick = digitalRead(JOY_SEL);
         delay(50);  // Allowing for scrolling to be at a normal speed
         uint16_t prevHighlight = selectedRest;
-        if (yVal < JOY_CENTER - JOY_DEADZONE || yVal > JOY_CENTER + JOY_DEADZONE) {
+        // If the joystick is moved
+        if (yVal < JOY_CENTER - JOY_DEADZONE || 
+            yVal > JOY_CENTER + JOY_DEADZONE) {
+            // If the joystick is pressed downward
             if (yVal < JOY_CENTER - JOY_DEADZONE) {
                 selectedRest -= 1;  // Go to the previous restaurant
+                // Check to go to the previous screen
                 if (selectedRest < 0 && screen >= 30) {
                     screen -= 30;
                     fillNames(screen, screen + 30);
                     selectedRest = 29;
                 }
                 selectedRest = constrain(selectedRest, 0, 29);
+            // If the joystick is pressed downward
             } else if (yVal > JOY_CENTER + JOY_DEADZONE) {
+                // If the end is reached
                 if (selectedRest == 29) {
                     screen += 30;
                     max = screen + 30;
+                    // Check for if the final restaurant is in the next screen
+                    // And only display up to that last restaurant
                     if (max >= numRests) {
                         max = numRests;
                     }
@@ -631,8 +640,11 @@ is pressed putting the map and cursor at the selected restaurant.
                     }
                 }
             }
+            // Highlighting the next restaurant and the unhighlighting the
+            // previous
             drawName(prevHighlight, prevHighlight+screen);
             drawName(selectedRest, selectedRest + screen);
+            // NEED TO FIX
             if (max >= numRests) {
                 tft.fillRect(0, 300, DISPLAY_WIDTH, 20, tft.color565(0, 0, 0));
             }
@@ -648,7 +660,6 @@ is pressed putting the map and cursor at the selected restaurant.
             break;
         }
     }
-    /*issue where it loops back if we go off the screen on the top...*/
     updateButtons(2);
     checkMap();
     moveMap();
@@ -675,6 +686,7 @@ call the drawCirlces function to display dots at the restaurant locations.
     int16_t touched_y = map(touch.x, TS_MINX, TS_MAXX, 0, DISPLAY_HEIGHT);
     if (touched_x < DISPLAY_WIDTH - 48) {
         drawCircles();
+    // Check if a button is pressed and update the appropriate one.
     } else if (touched_x >= DISPLAY_WIDTH -48) {
         if (touched_y <= DISPLAY_HEIGHT/2 - 2) {
             star++;
@@ -706,8 +718,8 @@ of the display. It takes in no parameters, nor does it return any value.
 
 void processJoystick() {
 /*  The point of this function is to use the joystick to move the cursor without
-having the cursor leave a black trail, go off screen, not flicker will not moving,
-and have a variable movement speed depending on the joystick movement.
+having the cursor leave a black trail, go off screen, not flicker will not
+moving, and have a variable movement speed depending on the joystick movement.
 
 Arguments:
 This function takes in no parameters.
