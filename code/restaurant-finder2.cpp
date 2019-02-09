@@ -397,7 +397,22 @@ sorted, and modifies it in memory without return a value explicitly.
     }
 }
 
-
+void sortFetch() {
+    for (int16_t i = 0; i < NUM_RESTAURANTS; i++) {
+        getRestaurant(i, &r);
+        r.rating = max(floor((r.rating+ 1)/2),1);
+        if (r.rating >= star) {
+            restDist[numRests].index = i;
+            // Getting the location of each restaurant
+            int16_t restY = lat_to_y(r.lat);
+            int16_t restX = lon_to_x(r.lon);
+            // Calculating and saving the manhattan distances of each restaurant
+            restDist[numRests].dist = abs((MAPX + CURSORX)-restX) + abs((MAPY +
+                CURSORY) - restY);
+            numRests++;
+        }
+    }
+}
 void fetchRests() {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 The fetchRests function takes no paramaters:
@@ -419,20 +434,7 @@ then list the closest 30 to the display.
         }
         */
         numRests = 0;
-        for (int16_t i = 0; i < NUM_RESTAURANTS; i++) {
-            getRestaurant(i, &r);
-            r.rating = max(floor((r.rating+ 1)/2),1);
-            if (r.rating >= star) {
-            restDist[numRests].index = i;
-            // Getting the location of each restaurant
-            int16_t restY = lat_to_y(r.lat);
-            int16_t restX = lon_to_x(r.lon);
-            // Calculating and saving the manhattan distances of each restaurant
-            restDist[numRests].dist = abs((MAPX + CURSORX)-restX) + abs((MAPY +
-                CURSORY) - restY);
-            numRests++;
-            }
-        }
+        sortFetch();
         start = millis();
         qSort(&restDist[0], 0, numRests);
         end = millis();
@@ -450,20 +452,7 @@ then list the closest 30 to the display.
         }
         */
         numRests = 0;
-        for (int16_t j = 0; j < NUM_RESTAURANTS; j++) {
-            getRestaurant(j, &r);
-            r.rating = max(floor((r.rating+ 1)/2),1);
-            if (r.rating >= star) {
-            restDist[numRests].index = j;
-            // Getting the location of each restaurant
-            int16_t restY = lat_to_y(r.lat);
-            int16_t restX = lon_to_x(r.lon);
-            // Calculating and saving the manhattan distances of each restaurant
-            restDist[numRests].dist = abs((MAPX + CURSORX)-restX) + abs((MAPY +
-                CURSORY) - restY);
-            numRests++;
-            }
-        }
+        sortFetch();
         start = millis();
         iSort(&restDist[0]);
         end = millis();
@@ -568,6 +557,7 @@ is pressed putting the map and cursor at the selected restaurant.
     selectedRest = 0;  // Setting the value of the initial restaurant
     fillNames(0, 30);
     int screen = 0;
+    int max = 0;
     while (true) {
         // Checking the input from the joystick
         xVal = analogRead(JOY_HORIZ);
@@ -587,12 +577,12 @@ is pressed putting the map and cursor at the selected restaurant.
             } else if (yVal > JOY_CENTER + JOY_DEADZONE) {
                 if (selectedRest == 29) {
                     screen += 30;
-                    int max = screen + 30;
+                    max = screen + 30;
                     if (max >= numRests) {
                         max = numRests;
                     }
-                    fillNames(screen, max);
                     selectedRest = 0;
+                    fillNames(screen, max);
                 } else {
                     selectedRest += 1;  // Go to the next restaurant
                     if (screen + selectedRest + 1 > numRests) {
@@ -604,6 +594,9 @@ is pressed putting the map and cursor at the selected restaurant.
             }
             drawName(prevHighlight, prevHighlight+screen);
             drawName(selectedRest, selectedRest + screen);
+            if (max >= numRests) {
+                tft.fillRect(0, 300, DISPLAY_WIDTH, 20, tft.color565(0, 0, 0));
+            }
         }
         // If the joystick is pressed again
         if (!joyClick) {
