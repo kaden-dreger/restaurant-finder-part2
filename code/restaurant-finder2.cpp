@@ -144,21 +144,36 @@ void setup() {
 }
 
 
-void updateButtons(int num) {
+void updateButtons(int mode) {
+ /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+The updateButtons function takes a paramater:
+    mode: This is a variable that determines if one or both buttons need to
+    be updated
+
+It does not return any parameters.
+
+The point of this function is to display and update the buttons on the tft
+display according to the mode selected.
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    // Array of the text to be displayed
     char text[] = {'Q', 'S', 'O', 'R', 'T', 'I', 'S', 'O', 'R', 'T', 'B',
                     'O', 'T', 'H'};
+    // Drawing the borders of the buttons
     tft.drawRect(272, 0, 48, DISPLAY_HEIGHT/2 - 1, tft.color565(255, 0, 0));
     tft.drawRect(272, DISPLAY_HEIGHT/2 + 1, 48, DISPLAY_HEIGHT/2 - 1,
         tft.color565(0, 255, 0));
-    if (num == 0 || num == 2) {
+    // If the star or both buttons need to be updated
+    if (mode == 0 || mode == 2) {
         tft.fillRect(274, 2, 44, DISPLAY_HEIGHT/2 - 5,
             tft.color565(255, 255, 255));
         tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/4 - 8,
             star + 48, ILI9341_BLACK, ILI9341_BLACK, 2);
     }
-    if (num == 1 || num == 2) {
+    // If the sort or both buttons need to be updated
+    if (mode == 1 || mode == 2) {
         tft.fillRect(274, DISPLAY_HEIGHT/2 + 3, 44, DISPLAY_HEIGHT/2 - 5,
             tft.color565(255, 255, 255));
+        // Determining the sort to print
         if (sort == 0) {
             for (int i = 0; i < 5; i++) {
                 tft.drawChar(DISPLAY_WIDTH - (48/2) - 5,
