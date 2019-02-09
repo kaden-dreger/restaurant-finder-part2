@@ -145,26 +145,35 @@ void setup() {
 
 
 void updateButtons(int num) {
-    char text[] = {'Q', 'S', 'O', 'R', 'T', 'I', 'S', 'O', 'R', 'T', 'B', 'O', 'T', 'H'};
+    char text[] = {'Q', 'S', 'O', 'R', 'T', 'I', 'S', 'O', 'R', 'T', 'B',
+                    'O', 'T', 'H'};
     tft.drawRect(272, 0, 48, DISPLAY_HEIGHT/2 - 1, tft.color565(255, 0, 0));
-    tft.drawRect(272, DISPLAY_HEIGHT/2 + 1, 48, DISPLAY_HEIGHT/2 - 1, tft.color565(0, 255, 0));
+    tft.drawRect(272, DISPLAY_HEIGHT/2 + 1, 48, DISPLAY_HEIGHT/2 - 1,
+        tft.color565(0, 255, 0));
     if (num == 0 || num == 2) {
-        tft.fillRect(274, 2, 44, DISPLAY_HEIGHT/2 - 5,tft.color565(255, 255, 255));
-        tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/4 - 8, star + 48, ILI9341_BLACK, ILI9341_BLACK, 2);
+        tft.fillRect(274, 2, 44, DISPLAY_HEIGHT/2 - 5,
+            tft.color565(255, 255, 255));
+        tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/4 - 8,
+            star + 48, ILI9341_BLACK, ILI9341_BLACK, 2);
     }
     if (num == 1 || num == 2) {
-        tft.fillRect(274, DISPLAY_HEIGHT/2 + 3, 44, DISPLAY_HEIGHT/2 - 5, tft.color565(255, 255, 255));
+        tft.fillRect(274, DISPLAY_HEIGHT/2 + 3, 44, DISPLAY_HEIGHT/2 - 5,
+            tft.color565(255, 255, 255));
         if (sort == 0) {
             for (int i = 0; i < 5; i++) {
-                tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/2 + (i*20) + 15, text[i], ILI9341_BLACK, ILI9341_WHITE, 2);
+                tft.drawChar(DISPLAY_WIDTH - (48/2) - 5,
+                    DISPLAY_HEIGHT/2 + (i*20) + 15, text[i],
+                    ILI9341_BLACK, ILI9341_WHITE, 2);
             }
         } else if (sort == 1) {
             for (int i = 0; i < 5; i++) {
-                tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/2 + (i*20) + 15, text[i+5], ILI9341_BLACK, ILI9341_WHITE, 2);
+                tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/2 +
+                    (i*20) + 15, text[i+5], ILI9341_BLACK, ILI9341_WHITE, 2);
             }
         } else {
             for (int i = 0; i < 4; i++) {
-                tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/2 + (i*20) + 20, text[i+10], ILI9341_BLACK, ILI9341_WHITE, 2);
+                tft.drawChar(DISPLAY_WIDTH - (48/2) - 5, DISPLAY_HEIGHT/2 +
+                    (i*20) + 20, text[i+10], ILI9341_BLACK, ILI9341_WHITE, 2);
             }
         }
     }
@@ -329,7 +338,6 @@ uint16_t  index;  // index  of  restaurant  from 0 to  NUM_RESTAURANTS -1
 uint16_t  dist;   //  Manhatten  distance  to  cursor  position
 };
 RestDist restDist[NUM_RESTAURANTS];
-//RestDist rest1Dist[NUM_RESTAURANTS];
 
 
 void iswap(RestDist* array, int m) {
@@ -347,7 +355,7 @@ This function does not return anything, instead it modifies the array in memory.
     array[m - 1] = temp;
 }
 
-// The following 3 functions are the modified implementation of 
+// The following 3 functions are the modified implementation of
 // quciksort on eclass
 void qswap(RestDist* a, RestDist* b) {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -359,48 +367,48 @@ It takes in the parameters:
 
 This function does not return anything, instead it modifies the array in memory.
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    RestDist t = *a; 
-    *a = *b; 
-    *b = t; 
+    RestDist t = *a;
+    *a = *b;
+    *b = t;
 }
 
-/* This function takes last element as pivot, places 
-the pivot element at its correct position in sorted 
-    array, and places all smaller (smaller than pivot) 
-to left of pivot and all greater elements to right 
+/* This function takes last element as pivot, places
+the pivot element at its correct position in sorted
+    array, and places all smaller (smaller than pivot)
+to left of pivot and all greater elements to right
 of pivot */
-int partition (RestDist arr[], int16_t low, int16_t high) { 
-    int16_t pivot = arr[high].dist; // pivot 
-    int16_t i = (low - 1); // Index of smaller element 
+int partition(RestDist arr[], int16_t low, int16_t high) {
+    int16_t pivot = arr[high].dist;  // pivot
+    int16_t i = (low - 1);  // Index of smaller element
 
-    for (int16_t j = low; j <= high- 1; j++) { 
-        // If current element is smaller than or 
-        // equal to pivot 
-        if (arr[j].dist <= pivot) { 
-            i++; // increment index of smaller element 
-            qswap(&arr[i], &arr[j]); 
-        } 
-    } 
-    qswap(&arr[i + 1], &arr[high]); 
-    return (i + 1); 
-} 
+    for (int16_t j = low; j <= high- 1; j++) {
+        // If current element is smaller than or
+        // equal to pivot
+        if (arr[j].dist <= pivot) {
+            i++;  // increment index of smaller element
+            qswap(&arr[i], &arr[j]);
+        }
+    }
+    qswap(&arr[i + 1], &arr[high]);
+    return (i + 1);
+}
 
 /* The main function that implements QuickSort 
 arr[] --> Array to be sorted, 
 low --> Starting index, 
 high --> Ending index */
-void qSort(RestDist arr[], int16_t low, int16_t high) { 
-    if (low < high) { 
-        /* pi is partitioning index, arr[p] is now 
+void qSort(RestDist arr[], int16_t low, int16_t high) {
+    if (low < high) {
+        /* pi is partitioning index, arr[p] is now
         at right place */
-        int16_t pi = partition(arr, low, high); 
+        int16_t pi = partition(arr, low, high);
 
-        // Separately sort elements before 
-        // partition and after partition 
-        qSort(arr, low, pi - 1); 
-        qSort(arr, pi + 1, high); 
-    } 
-} 
+        // Separately sort elements before
+        // partition and after partition
+        qSort(arr, low, pi - 1);
+        qSort(arr, pi + 1, high);
+    }
+}
 
 void iSort(RestDist *array) {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -433,7 +441,7 @@ based on the rating of the restaurants selected.
     for (int16_t i = 0; i < NUM_RESTAURANTS; i++) {
         getRestaurant(i, &r);
         // Adjusting the rating to a 1-5 star.
-        r.rating = max(floor((r.rating+ 1)/2),1);
+        r.rating = max(floor((r.rating+ 1)/2), 1);
         if (r.rating >= star) {
             restDist[numRests].index = i;
             // Getting the location of each restaurant
@@ -461,23 +469,21 @@ then list the closest 30 to the display.
     tft.setTextWrap(false);
     int selectedRest = 0;
     int start, end, time;
-    //
+    // If the QSORT or BOTH are chosen
     if (sort == 0 || sort == 2) {
         numRests = 0;
-        sortFetch();
-        //int n = sizeof(restDist)/sizeof(restDist[0]); 
-        start = millis();
-        qSort(restDist, 0, numRests - 1);
-        //qSort(&restDist[0], 0, numRests);
-        end = millis();
-        time = end - start;
+        sortFetch();  // Getting the restarunts
+        start = millis();  // Starting the timer
+        qSort(restDist, 0, numRests - 1);  // Sorting the restaurants
+        end = millis();  // Ending the timer
+        time = end - start;  // Getting the time
         Serial.print("qsort ");
         Serial.print(numRests);
         Serial.print(" restaurants: ");
         Serial.print(time);
         Serial.println(" ms");
     }
-
+    // If the ISORT or BOTH are chosen
     if (sort == 1 || sort == 2) {
         numRests = 0;
         sortFetch();
@@ -509,7 +515,7 @@ screen is touched.
         getRestaurant(i, &r);
         int16_t restY = lat_to_y(r.lat);
         int16_t restX = lon_to_x(r.lon);
-        r.rating = max(floor((r.rating+ 1)/2),1);
+        r.rating = max(floor((r.rating+ 1)/2), 1);
         // Checking if the restaurants are on the screen
         if ((restX > MAPX + squareSize && restX < MAPX + DISPLAY_WIDTH - 48 -
              squareSize) && (restY > MAPY + squareSize && restY < MAPY +
@@ -564,7 +570,7 @@ The point of this function is to read in the specified restaurants and display
 them to the screen.
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     tft.fillScreen(0);
-    tft.setCursor(0,0);  // Resetting the cursor location
+    tft.setCursor(0, 0);  // Resetting the cursor location
     for (uint16_t j = initial; j < final; j++) {
         getRestaurant(restDist[j].index, &r);
         if (j !=  selectedRest) {  // not  highlighted
@@ -607,7 +613,7 @@ is pressed putting the map and cursor at the selected restaurant.
         delay(50);  // Allowing for scrolling to be at a normal speed
         uint16_t prevHighlight = selectedRest;
         // If the joystick is moved
-        if (yVal < JOY_CENTER - JOY_DEADZONE || 
+        if (yVal < JOY_CENTER - JOY_DEADZONE ||
             yVal > JOY_CENTER + JOY_DEADZONE) {
             // If the joystick is pressed downward
             if (yVal < JOY_CENTER - JOY_DEADZONE) {
@@ -617,7 +623,6 @@ is pressed putting the map and cursor at the selected restaurant.
                     screen -= 30;
                     fillNames(screen, screen + 30);
                     selectedRest = 29;
-
                 }
                 selectedRest = constrain(selectedRest, 0, 29);
             // If the joystick is pressed downward
@@ -646,7 +651,6 @@ is pressed putting the map and cursor at the selected restaurant.
             // previous
             drawName(prevHighlight, prevHighlight+screen);
             drawName(selectedRest, selectedRest + screen);
-            // NEED TO FIX
         }
         if (screen + 30 >= numRests) {
                 tft.fillRect(0, 230, DISPLAY_WIDTH, 10, tft.color565(0, 0, 0));
@@ -696,7 +700,7 @@ call the drawCirlces function to display dots at the restaurant locations.
                 star = 1;
             }
             updateButtons(0);
-        } else if (touched_y >= DISPLAY_HEIGHT/2 + 2){
+        } else if (touched_y >= DISPLAY_HEIGHT/2 + 2) {
             sort++;
             if (sort > 2) {
                 sort = 0;
