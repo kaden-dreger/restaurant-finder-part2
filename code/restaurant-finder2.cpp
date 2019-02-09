@@ -87,7 +87,7 @@ uint32_t nowBlock;
 int squareSize = 8;  // THe size of the dots after the screen is touched
 
 // The initial selected restraunt
-uint16_t selectedRest = 0;
+int16_t selectedRest = 0;
 
 // forward declaration for redrawing the cursor and moving map.
 void redrawCursor(uint16_t colour);
@@ -578,11 +578,12 @@ is pressed putting the map and cursor at the selected restaurant.
         if (yVal < JOY_CENTER - JOY_DEADZONE || yVal > JOY_CENTER + JOY_DEADZONE) {
             if (yVal < JOY_CENTER - JOY_DEADZONE) {
                 selectedRest -= 1;  // Go to the previous restaurant
-                if (selectedRest < 0) {
+                if (selectedRest < 0 && screen >= 30) {
                     screen -= 30;
                     fillNames(screen, screen + 30);
                     selectedRest = 29;
                 }
+                selectedRest = constrain(selectedRest, 0, 29);
             } else if (yVal > JOY_CENTER + JOY_DEADZONE) {
                 if (selectedRest == 29) {
                     screen += 30;
