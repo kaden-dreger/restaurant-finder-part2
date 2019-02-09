@@ -1,6 +1,6 @@
 /*
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-Assignment 1 Part 2: Restaurants Finder
+Assignment 1 Part 2: Restaurant Finder
 Names: Rutvik Patel, Kaden Dreger
 ID: 1530012, 1528632
 CCID: rutvik, kaden
@@ -14,7 +14,8 @@ to fetches and sorts the 30 closest restaurants to the cursor location. You can
 then select a restaurant and the cursor will snap to the location of the
 restaurant. It also features the ability to tap the screen to bring up small
 rectangles on the display to indicate the location of the restaurants on your
-screen.
+screen. Using the buttons on the side, you can filter through which sort is to
+be used, and the minimum ratings of the restaurants from the range 1-5.
 
 NOTE: This program requires a correctly formatted
 SD card with the neccessary files to run the program.
@@ -347,29 +348,25 @@ This array does not return anything, instead it modifies the array in memory.
 }
 
 // A utility function to swap two elements 
-void qswap(RestDist* a, RestDist* b) 
-{ 
+void qswap(RestDist* a, RestDist* b) { 
     RestDist t = *a; 
     *a = *b; 
     *b = t; 
-} 
+}
 
 /* This function takes last element as pivot, places 
 the pivot element at its correct position in sorted 
     array, and places all smaller (smaller than pivot) 
 to left of pivot and all greater elements to right 
 of pivot */
-int partition (RestDist arr[], int16_t low, int16_t high) 
-{ 
+int partition (RestDist arr[], int16_t low, int16_t high) { 
     int16_t pivot = arr[high].dist; // pivot 
     int16_t i = (low - 1); // Index of smaller element 
 
-    for (int16_t j = low; j <= high- 1; j++) 
-    { 
+    for (int16_t j = low; j <= high- 1; j++) { 
         // If current element is smaller than or 
         // equal to pivot 
-        if (arr[j].dist <= pivot) 
-        { 
+        if (arr[j].dist <= pivot) { 
             i++; // increment index of smaller element 
             qswap(&arr[i], &arr[j]); 
         } 
@@ -491,6 +488,7 @@ then list the closest 30 to the display.
         Serial.print(time);
         Serial.println(" ms");
     }
+
     if (sort == 1 || sort == 2) {
         numRests = 0;
         sortFetch();
