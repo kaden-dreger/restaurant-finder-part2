@@ -580,6 +580,8 @@ is pressed putting the map and cursor at the selected restaurant.
                 selectedRest -= 1;  // Go to the previous restaurant
                 if (selectedRest < 0) {
                     screen -= 30;
+                    fillNames(screen, screen + 30);
+                    selectedRest = 29;
                 }
             } else if (yVal > JOY_CENTER + JOY_DEADZONE) {
                 if (selectedRest == 29) {
@@ -588,13 +590,10 @@ is pressed putting the map and cursor at the selected restaurant.
                     if (max >= numRests) {
                         max = numRests;
                     }
-                    Serial.print(screen);
-                    Serial.println(max);
                     fillNames(screen, max);
                     selectedRest = 0;
                 } else {
                     selectedRest += 1;  // Go to the next restaurant
-                    //selectedRest = constrain(selectedRest, 0, 29);
                     if (screen + selectedRest + 1 > numRests) {
                         screen = 0;
                         selectedRest = 0;
